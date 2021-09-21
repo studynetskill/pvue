@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pvue</title>
+  </head>
+  <body>
+    <div id="app" v-scope="{foo:'bar', zoo:true}">
+      {{foo}}
+      <div v-if="zoo">zoo</div>
+      <div v-else>else</div>
+      <div @click="con">click me</div>
+    </div>
+    <script type="module" src="main.ts"></script>
+  </body>
+</html>
