@@ -3,7 +3,9 @@ import { checkAttr } from "./utils";
 import { evaluate } from "./eval";
 import { text } from "./directives/text";
 import { _if } from "./directives/if";
+import { _for } from "./directives/for";
 import { on } from "./directives/on";
+import { builtInDirectives, Directive } from "./directives";
 
 const dirRE = /^(?:v-|:|@)/;
 const interpolationRE = /\{\{([^]+?)\}\}/g;
@@ -22,7 +24,14 @@ export const walk = (node: Node, ctx: Context): ChildNode | null | void => {
     // 处理v-if
     if ((exp = checkAttr(el, "v-if"))) {
       let res = _if(el, exp, ctx);
-      // console.log('res', res)
+
+      return res;
+    }
+
+    // 处理v-for
+    if ((exp = checkAttr(el, "v-for"))) {
+      let res = _for(el, exp, ctx);
+
       return res;
     }
 
@@ -82,7 +91,7 @@ const walkChildren = (el: Element | DocumentFragment, ctx: Context): void => {
 // 执行指令dir
 const applyDirective = (
   el: Node,
-  dir: any,
+  dir: Directive,
   exp: string,
   ctx: Context,
   arg?: string
@@ -114,10 +123,15 @@ const processDirective = (
 ) => {
   let dir;
   let arg: string | undefined;
-  // 只处理@click等@开头的事件
+  // 处理@click等@开头的事件
   if (raw.startsWith("@")) {
     dir = on;
     arg = raw.slice(1);
+  } else {
+    // 处理show test html
+    const dirName = raw.slice(2);
+    dir = builtInDirectives[dirName];
+    arg = exp;
   }
 
   if (dir) {

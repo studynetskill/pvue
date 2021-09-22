@@ -1,7 +1,7 @@
 import { createContext } from "./context";
 import { isString } from "./utils";
 import { Block } from "./block";
-import { reactive } from "../reactivity";
+import { reactive } from "@vue/reactivity";
 
 // 程序入口，返回包含mount的对象
 export const createApp = (initialData?: any) => {
@@ -22,12 +22,8 @@ export const createApp = (initialData?: any) => {
         el = document.querySelector(el as string);
       }
 
-      // el = el || document.documentElement;
-
       let roots: Element[];
-      // if (el.hasAttribute("v-scope")) {
-      //   roots = [el];
-      // }
+
       roots = [el as Element];
       rootBlocks = roots.map((el) => new Block(el, ctx, true));
 

@@ -1,4 +1,4 @@
-import { reactive, effect } from "../reactivity/index";
+import { reactive, effect } from "@vue/reactivity";
 
 export interface Context {
   scope: Record<string, any>;
@@ -17,15 +17,17 @@ export const createContext = (): Context => {
   return ctx;
 };
 
+// 生成下一级上下文
 export const createScopedContext = (ctx: Context, data = {}) => {
   const parentScope = ctx.scope;
   const mergedScope = Object.create(parentScope);
   Object.defineProperties(mergedScope, Object.getOwnPropertyDescriptors(data));
-  // 子节点可以改变父节点的值
+
   const reactiveProxy = reactive(
     new Proxy(mergedScope, {
       set(target, key, value, receiver) {
-        if (receiver === reactiveProxy && !target.hasOwnProperty(value)) {
+        // 子节点可以改变父节点的值
+        if (receiver === reactiveProxy && !target.hasOwnProperty(key)) {
           return Reflect.set(parentScope, key, value);
         }
         return Reflect.set(target, key, value, receiver);

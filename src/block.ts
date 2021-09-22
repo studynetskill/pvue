@@ -9,6 +9,7 @@ export class Block {
   end?: Text;
 
   constructor(template: Element, ctx: Context, isRoot = false) {
+    // 只处理Element节点
     if (isRoot) {
       this.template = template;
     } else {

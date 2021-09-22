@@ -1,5 +1,9 @@
 import { Context } from "../context";
-import { effect } from "../../reactivity";
+import { effect } from "@vue/reactivity";
+import { on } from "./on";
+import { show } from "./show";
+import { text } from "./text";
+import { html } from "./html";
 
 // 定义接口
 export interface Directive<T = Element> {
@@ -15,3 +19,10 @@ export interface DirectiveContext<T = Element> {
   modifiers?: Record<string, true>;
   ctx: Context;
 }
+
+export const builtInDirectives: Record<string, Directive<any>> = {
+  on,
+  show,
+  text,
+  html,
+};

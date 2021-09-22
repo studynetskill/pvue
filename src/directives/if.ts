@@ -1,6 +1,6 @@
 import { Context } from "../context";
 import { Block } from "../block";
-import { effect } from "../../reactivity/effect";
+import { effect } from "@vue/reactivity";
 import { evaluate } from "../eval";
 import { checkAttr } from "../utils";
 

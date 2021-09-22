@@ -5,6 +5,7 @@ export const evaluate = (scope: any, exp: string, el?: Node) =>
   execute(scope, `return(${exp})`, el);
 
 const execute = (scope: any, exp: string, el?: Node) => {
+  // 缓存
   const fn = evalCache[exp] || (evalCache[exp] = toFunction(exp));
 
   try {
