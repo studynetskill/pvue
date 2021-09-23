@@ -6,13 +6,11 @@ import { Block } from "../block";
 
 // 获取v-for="item in list"的item和list
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
-// const forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
-// const stripParensRE = /^\(|\)$/g;
-// const destructureRE = /^[{[]\s*((?:[\w_$]+\s*,?\s*)+)[\]}]$/;
 
 type KeyToIndexMap = Map<any, number>;
 
 export const _for = (el: Element, exp: string, ctx: Context) => {
+  // 获取v-for="item in list"的item和list
   const inMath = exp.match(forAliasRE);
   if (!inMath) {
     console.warn(`invalid v-for expression: ${exp}`);
@@ -21,12 +19,13 @@ export const _for = (el: Element, exp: string, ctx: Context) => {
 
   const nextNode = el.nextSibling;
   const parent = el.parentElement!;
+  // 插入一个空白的锚点作为for插入和更新的位置
   const anchor = new Text("");
   parent.insertBefore(anchor, el);
   parent.removeChild(el);
-
+  // list
   const sourceExp = inMath[2].trim();
-
+  // item
   const valueExp = inMath[1].trim();
 
   let keyAttr = "key";
@@ -36,9 +35,11 @@ export const _for = (el: Element, exp: string, ctx: Context) => {
     el.getAttribute((keyAttr = "v-bind:key"));
   if (keyExp) {
     el.removeAttribute(keyExp);
+    // item.id
     if (keyAttr === "key") keyExp = JSON.stringify(keyExp);
   }
 
+  // 创建子作用域
   const createChildContexts = (source: unknown): [Context[], KeyToIndexMap] => {
     const map: KeyToIndexMap = new Map();
     const ctxs: Context[] = [];
@@ -68,6 +69,7 @@ export const _for = (el: Element, exp: string, ctx: Context) => {
     objKey?: string
   ): Context => {
     const data: any = {};
+    // {item: Proxy}
     data[valueExp] = value;
 
     const childCtx = createScopedContext(ctx, data);
@@ -77,6 +79,7 @@ export const _for = (el: Element, exp: string, ctx: Context) => {
     return childCtx;
   };
 
+  // 将for全部挂在到dom上
   const mountBlock = (ctx: Context, anchor: Node) => {
     const block = new Block(el, ctx);
     block.key = ctx.key;
@@ -91,9 +94,10 @@ export const _for = (el: Element, exp: string, ctx: Context) => {
 
   effect(() => {
     const source = evaluate(ctx.scope, sourceExp);
-    // const prevKeyToIndexMap = keyToIndexMap;
+
     [childCtxs, keyToIndexMap] = createChildContexts(source);
 
+    // 初始化时直接全部渲染
     if (!mounted) {
       blocks = childCtxs.map((s) => mountBlock(s, anchor));
       mounted = true;
