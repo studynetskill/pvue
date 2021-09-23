@@ -91,7 +91,7 @@ const walkChildren = (el: Element | DocumentFragment, ctx: Context): void => {
 // 执行指令dir
 const applyDirective = (
   el: Node,
-  dir: Directive,
+  dir: Directive<any>,
   exp: string,
   ctx: Context,
   arg?: string
@@ -136,6 +136,6 @@ const processDirective = (
 
   if (dir) {
     el.removeAttribute(raw);
+    applyDirective(el, dir, exp, ctx, arg);
   }
-  applyDirective(el, dir, exp, ctx, arg);
 };

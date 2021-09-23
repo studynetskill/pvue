@@ -1,9 +1,17 @@
-export const isString = (string: any): boolean => {
-  return typeof string === "string";
+export const isString = (val: any): val is string => {
+  return typeof val === "string";
 };
 
-export const isObject = (obj: any): boolean => {
-  return typeof obj === "object" && obj !== null;
+export const isNumber = (val: any): val is number => {
+  return typeof val === "number";
+};
+
+export const isObject = (val: any): val is Record<any, any> => {
+  return typeof val === "object" && val !== null;
+};
+
+export const isArray = (val: any): val is any[] => {
+  return typeof val === "object" && val !== null;
 };
 
 // 查看是否有相应的v-xxx等指令，如果有就返回它的值，并移除html上的指令

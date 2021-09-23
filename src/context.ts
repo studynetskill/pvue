@@ -1,6 +1,7 @@
 import { reactive, effect } from "@vue/reactivity";
 
 export interface Context {
+  key?: any;
   scope: Record<string, any>;
   effect: typeof effect;
   cleanups: (() => void)[];
@@ -18,7 +19,7 @@ export const createContext = (): Context => {
 };
 
 // 生成子作用域或者说子上下文
-export const createScopedContext = (ctx: Context, data = {}) => {
+export const createScopedContext = (ctx: Context, data = {}): Context => {
   const parentScope = ctx.scope;
   const mergedScope = Object.create(parentScope);
   Object.defineProperties(mergedScope, Object.getOwnPropertyDescriptors(data));

@@ -4,17 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pvue</title>
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <!-- 测试 -->
-    <div id="app" v-scope="{ open: true, elseOpen: true,htm:'<div>html<div>'}">
-      <button @click="open = !open">toggle</button>
+    <div
+      id="app"
+      v-cloak
+      v-scope="{ open: true, elseOpen: true,htm:'<div>html<div>'}"
+    >
+      <!-- <button @click="open = !open">toggle</button>
       <button @click="elseOpen = !elseOpen">toggle else</button>
       <div v-if="open">ok</div>
       <div v-else-if="elseOpen">else if</div>
       <div v-else>else</div>
       <div v-show="open">show</div>
-      <div v-html="htm"></div>
+      <div v-html="htm"></div> -->
+      <ul>
+        <li v-for="item of list" :key="item.id">
+          <p>{{item.text}}</p>
+        </li>
+      </ul>
     </div>
     <script type="module" src="./main.ts"></script>
   </body>

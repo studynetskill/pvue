@@ -7,6 +7,7 @@ export class Block {
   ctx: Context;
   start?: Text;
   end?: Text;
+  key?: any;
 
   constructor(template: Element, ctx: Context, isRoot = false) {
     // 只处理Element节点
