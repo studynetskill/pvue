@@ -15,6 +15,6 @@ export const on: Directive = ({ el, get, exp, arg }) => {
   let handler = simplePathRE.test(exp)
     ? get(`(e => ${exp}(e))`) // e=>fun(e)
     : get(`($event => { ${exp} })`); // $event => console.log(1)
-
+  // 开始监听
   listen(el, arg, handler);
 };

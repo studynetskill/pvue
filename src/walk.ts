@@ -11,9 +11,10 @@ const dirRE = /^(?:v-|:|@)/;
 const interpolationRE = /\{\{([^]+?)\}\}/g;
 
 export const walk = (node: Node, ctx: Context): ChildNode | null | void => {
-  // console.log('node', node)
+  // 通过type来处理不同的节点类型
   const type = node.nodeType;
 
+  // 处理元素类型，如div等
   if (type === 1) {
     const el = node as Element;
     let exp: string | null;
@@ -75,7 +76,7 @@ export const walk = (node: Node, ctx: Context): ChildNode | null | void => {
       applyDirective(node, text, segments.join("+"), ctx);
     }
   } else if (type === 11) {
-    // todo
+    // 处理fragment文档碎片，实际并没有写处理函数，这里只是搭个架子
     walkChildren(node as DocumentFragment, ctx);
   }
 };
@@ -87,7 +88,6 @@ const walkChildren = (el: Element | DocumentFragment, ctx: Context): void => {
     child = walk(child, ctx) || child.nextSibling;
   }
 };
-
 // 执行指令dir
 const applyDirective = (
   el: Node,

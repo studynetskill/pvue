@@ -25,6 +25,7 @@ export const createApp = (initialData?: any) => {
       let roots: Element[];
 
       roots = [el as Element];
+      // 把函数的处理逻辑防盗block里
       rootBlocks = roots.map((el) => new Block(el, ctx, true));
 
       return this;

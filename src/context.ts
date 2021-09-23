@@ -17,7 +17,7 @@ export const createContext = (): Context => {
   return ctx;
 };
 
-// 生成下一级上下文
+// 生成子作用域或者说子上下文
 export const createScopedContext = (ctx: Context, data = {}) => {
   const parentScope = ctx.scope;
   const mergedScope = Object.create(parentScope);

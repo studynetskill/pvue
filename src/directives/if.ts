@@ -11,10 +11,11 @@ interface Branch {
 
 export const _if = (el: Element, exp: string, ctx: Context) => {
   const parent = el.parentElement!;
+  // 插入一个<!-- v-if --> 作为锚点，后面if的语句将插入这个前面
   const anchor = new Comment("v-if");
   parent.insertBefore(anchor, el);
   let branches: Branch[];
-
+  // 收集所有的分支和条件到一个数组中
   branches = [
     {
       el,
@@ -24,7 +25,7 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
 
   let elseEl: Element;
   let elseExp: string | null;
-
+  // 收集v-else v-else-if 到分支数组中储存起来,并删除原来的分支节点
   while ((elseEl = el.nextElementSibling!)) {
     // console.log('if', elseEl)
     elseExp = null;
@@ -46,8 +47,9 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
   parent.removeChild(el);
 
   let block: Block | undefined;
+  // 用来记录当前的活动节点是哪个
   let activeBranchIndex = -1;
-
+  // 删除当前节点
   const removeActiveBlock = () => {
     if (block) {
       parent.insertBefore(anchor, block.el);
@@ -55,28 +57,26 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
       block = undefined;
     }
   };
-
+  // 每次v-if的值改变都会触发这个更新
   effect(() => {
+    // 遍历分支数组，如果值已经改变，就删除当前节点，并从数组中找到exp值为真的节点插入锚点之前
     for (let i = 0; i < branches.length; i++) {
       const { exp, el } = branches[i];
-      //  console.log('effect', exp,el)
       if (!exp || evaluate(ctx.scope, exp, el)) {
         if (i !== activeBranchIndex) {
-          // console.log('beforechange', el)
           removeActiveBlock();
           block = new Block(el, ctx);
           block.insert(parent, anchor);
           parent.removeChild(anchor);
           activeBranchIndex = i;
         }
-        //  console.log('before', el)
         return;
       }
     }
-
+    // 如果所有的值都为假，就删除当前节点
     activeBranchIndex = -1;
     removeActiveBlock();
   });
-  //  console.log('if', nextNode)
+
   return nextNode;
 };
